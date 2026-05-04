@@ -1,1 +1,19 @@
-
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ramya-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ramya
+  template:
+    metadata:
+      labels:
+        app: ramya
+    spec:
+      containers:
+      - name: ramya-container
+        image: ramya-app
+        ports:
+        - containerPort: 5000

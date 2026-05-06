@@ -1,40 +1,31 @@
 pipeline {
-    agent {
-        docker {
-            image 'docker:latest'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
-    }
+    agent any   
 
     environment {
-        IMAGE_NAME = "your-dockerhub-username/portfolio"
+        IMAGE_NAME = "ramyasiva07/portfolio"
     }
 
     stages {
-        stage('Clone') {
-            steps {
-                git 'https://github.com/your-username/repo-name.git'
-            }
-        }
 
         stage('Build Image') {
             steps {
-                sh 'docker build -t $IMAGE_NAME:latest ./docker'
+                bat 'docker build -t %IMAGE_NAME%:latest .'
             }
         }
 
         stage('Push Image') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
-                    sh 'echo $PASS | docker login -u $USER --password-stdin'
-                    sh 'docker push $IMAGE_NAME:latest'
+                    bat 'echo %PASS% | docker login -u %USER% --password-stdin'
+                    bat 'docker push %IMAGE_NAME%:latest'
                 }
             }
         }
 
         stage('Deploy to Kubernetes') {
             steps {
-                sh 'kubectl apply -f k8s/'
+                bat 'kubectl apply -f k8s/ --validate=false'
+                bat 'kubectl rollout restart deployment portfolio'
             }
         }
     }

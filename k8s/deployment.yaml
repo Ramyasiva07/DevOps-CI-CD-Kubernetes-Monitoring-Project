@@ -13,7 +13,8 @@ spec:
         app: portfolio
     spec:
       containers:
-      - name: portfolio
-        image: your-dockerhub-username/portfolio:latest
-        ports:
-        - containerPort: 5000
+        - name: portfolio
+          image: ramyasiva07/portfolio:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5000
